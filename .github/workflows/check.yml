@@ -1,0 +1,33 @@
+name: check
+
+# 정책 저장소 자체 검사. 크로스 저장소 접근이 없으므로 기본 토큰으로 돈다.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # checkout 은 detached HEAD 로 둔다. 일부 검사가 현재 브랜치를 보므로
+      # 로컬 main 을 만들어 준다 — 없으면 그 검사가 조용히 SKIP 된다.
+      - name: main 브랜치 만들기
+        run: git checkout -B main
+
+      - name: SKILL.md 에 description 이 있나
+        run: |
+          grep -q '^description:' SKILL.md \
+            || { echo "description 이 없으면 이 skill 은 영원히 로딩되지 않는다"; exit 1; }
+
+      - name: 자체 검사 (tests/)
+        run: |
+          ls tests/*.sh >/dev/null 2>&1 || { echo "tests 없음 — 건너뛴다"; exit 0; }
+          for t in tests/*.sh; do echo "== $t"; bash "$t"; done
+
+      - name: 저장소 lint (checks/)
+        run: |
+          ls checks/*.sh >/dev/null 2>&1 || { echo "checks 없음 — 건너뛴다"; exit 0; }
+          for c in checks/*.sh; do echo "== $c"; bash "$c"; done
