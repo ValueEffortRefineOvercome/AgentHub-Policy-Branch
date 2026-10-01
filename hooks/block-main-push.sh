@@ -22,7 +22,12 @@ payload=$(cat)
 # (3) 이 실제로 발생하면 패턴에 추가한다. jq 가 깔리면 `jq -r '.tool_input.command'`.
 grep -Eq 'git\b.*\b(push|commit)\b' <<<"$payload" || exit 0
 
-branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) || exit 0
+# 통과시켜야 하는 세 경우를 명시한다 — 예전엔 rev-parse 실패에 의존해 우연히 통과했다.
+git rev-parse --git-dir >/dev/null 2>&1 || exit 0   # git 저장소 아님
+git rev-parse HEAD      >/dev/null 2>&1 || exit 0   # 커밋 0개 = 초기 커밋, 막으면 부트스트랩 불가
+branch=$(git branch --show-current 2>/dev/null)
+[ -n "$branch" ] || exit 0                          # detached HEAD — main 을 건드리지 않는다
+
 case "$branch" in main|master) ;; *) exit 0 ;; esac
 
 cat >&2 <<MSG
