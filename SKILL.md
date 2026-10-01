@@ -38,10 +38,14 @@ squash 머지. 1 작업 = 1 커밋이라 `git log` 가 작업 목록이 된다.
 
 ```bash
 git push -u origin <브랜치>                 # W
-gh pr create --fill                         # W
+gh pr create --draft --fill                 # W — 첫 커밋 직후. 작업 상태를 담는다
+gh pr ready                                 # W — 작업이 끝났을 때
 gh pr merge --squash --delete-branch        # X — 사전 확인
 git switch main && git pull --prune         # 로컬 main 동기화 + 죽은 ref 청소
 ```
+
+draft 로 먼저 만드는 이유와 PR 본문에 무엇을 적는지는 `/task-policy` 4절에 있다 —
+다른 PC 에서 작업을 이어받는 유일한 경로다.
 
 `--delete-branch` 가 2절의 "머지 후 즉시 삭제" 를 원격·로컬 양쪽에서 처리한다.
 `--prune` 이 없으면 삭제된 원격 브랜치의 추적 ref 가 남아 `git branch -r` 에
