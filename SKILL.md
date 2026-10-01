@@ -40,10 +40,12 @@ squash 머지. 1 작업 = 1 커밋이라 `git log` 가 작업 목록이 된다.
 git push -u origin <브랜치>                 # W
 gh pr create --fill                         # W
 gh pr merge --squash --delete-branch        # X — 사전 확인
-git switch main && git pull                 # 로컬 main 동기화
+git switch main && git pull --prune         # 로컬 main 동기화 + 죽은 ref 청소
 ```
 
 `--delete-branch` 가 2절의 "머지 후 즉시 삭제" 를 원격·로컬 양쪽에서 처리한다.
+`--prune` 이 없으면 삭제된 원격 브랜치의 추적 ref 가 남아 `git branch -r` 에
+계속 보인다 — 2절이 지켜졌는지 확인이 안 된다.
 
 ### 커밋 메시지
 `<type>: <한 줄 요약>` — type 은 1절과 같은 넷. **브랜치명에서 그대로 유도한다.**
