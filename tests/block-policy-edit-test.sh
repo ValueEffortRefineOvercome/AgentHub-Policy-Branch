@@ -28,7 +28,7 @@ t 2 "정책 파일 Write" \
 t 2 "정책 하위 디렉토리 파일" \
   '{"tool_name":"Edit","tool_input":{"file_path":".claude/skills/task-policy/references/pipeline.md"}}'
 t 2 "Windows 절대경로 역슬래시" \
-  '{"tool_name":"Edit","tool_input":{"file_path":"C:\dev\p\.claude\skills\branch-policy\SKILL.md"}}'
+  '{"tool_name":"Edit","tool_input":{"file_path":"C:\dev\p\.claude\skills\branch-policy\SKILL.md"}}'  # abs-path-ok: 경로 판정 입력
 t 0 "프로젝트 고유 skill 은 허용" \
   '{"tool_name":"Edit","tool_input":{"file_path":".claude/skills/project-notes/SKILL.md"}}'
 t 0 "프로젝트 코드는 허용" \
