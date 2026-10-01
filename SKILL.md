@@ -33,6 +33,18 @@ X 는 한 번 승인이 다음 번으로 이어지지 않는다. 매번 확인�
 squash 머지. 1 작업 = 1 커밋이라 `git log` 가 작업 목록이 된다.
 머지 전 `/pipeline-policy` 1절 게이트 전부 통과 필수.
 
+**PR 을 경유한다.** 로컬에서 main 에 머지하면 그게 곧 main 직접 커밋이라
+6절 hook 에 막힌다. 리뷰어가 없어도 PR 을 거친다 — 머지 기록이 남는다.
+
+```bash
+git push -u origin <브랜치>                 # W
+gh pr create --fill                         # W
+gh pr merge --squash --delete-branch        # X — 사전 확인
+git switch main && git pull                 # 로컬 main 동기화
+```
+
+`--delete-branch` 가 2절의 "머지 후 즉시 삭제" 를 원격·로컬 양쪽에서 처리한다.
+
 ### 커밋 메시지
 `<type>: <한 줄 요약>` — type 은 1절과 같은 넷. **브랜치명에서 그대로 유도한다.**
 

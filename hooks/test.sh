@@ -18,4 +18,7 @@ t 2 "git commit -m x"
 t 0 "git status"
 t 0 "git log --oneline -1"
 t 0 "ls -la"
+# 4절이 정한 머지 경로는 절대 막히면 안 된다 — 막히면 병합 자체가 불가능해진다
+t 0 "gh pr create --fill"
+t 0 "gh pr merge --squash --delete-branch"
 exit "$fail"
