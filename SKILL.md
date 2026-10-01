@@ -115,16 +115,28 @@ squash 머지라 이 한 줄이 히스토리에 남는 전부다. 본문은 "왜
     **2인째가 들어오면 이 예외를 지운다** — 그때부터 브랜치가 리뷰 지점이 된다.
   - 소비 프로젝트는 예외가 없다. `hooks/block-main-push.sh` 가 차단한다.
 
-### 서버측 차단은 아직 못 건다
+### 서버측 차단
 
-private 저장소의 브랜치 보호(classic protection · rulesets)는 **GitHub Pro 이상**이
-필요하다. Free 플랜에서는 두 API 가 모두 `403 Upgrade to GitHub Pro` 를 돌려준다.
+| 저장소 | 브랜치 보호 |
+|---|---|
+| **public** | **된다.** classic protection · rulesets 둘 다. 실측 확인 |
+| **private (Free)** | 안 된다. 두 API 가 `403 Upgrade to GitHub Pro` 를 돌려준다 |
 
-그래서 로컬 hook 이 유일한 수단이고, 그건 **실수만 막고 의도적 우회는 못 막는다** —
-hook 을 끄거나 Claude Code 밖에서 `git push origin main` 하면 아무도 안 막는다.
-1 인 운영에서는 그 구분이 대체로 무의미하지만, **2 인째가 들어올 때는 의미가 생긴다.**
-그때 Pro 전환 또는 public 전환을 예외 삭제와 같이 결정한다 — 다시 조사하지 않도록
-여기 적어둔다.
+정책 저장소(`AgentHub-Policy-*`)는 public 이라 **걸 수 있지만 걸지 않았다** — 위 예외가
+`main` 직접 커밋을 허용하고, 걸면 정책 한 줄 고치는 데 PR 이 강제된다.
+**2 인째가 들어와 예외를 지울 때 같이 건다.** 그때 쓸 설정은 `enforce_admins: true`,
+`required_approving_review_count: 0`, `required_linear_history: true` 다 — 승인 0 이면
+혼자서도 자기 PR 을 머지할 수 있고, push 만 막힌다.
+
+private 소비 프로젝트는 여전히 못 건다. 거기서 `main` 에 대해 작동하는 것은:
+
+| | |
+|---|---|
+| hook | 에이전트의 `main` 커밋·push 를 **예방**한다 |
+| CI | push 가 일어난 **뒤에** 실패한다. 사후 탐지이지 예방이 아니다 |
+
+**사람이 터미널에서 직접 `git push origin main` 하는 것은 private 에서 못 막는다.**
+막아야 하면 Pro 전환 또는 public 전환이고, 1 인 운영에서는 대체로 무의미하다.
 - `--force` (`--force-with-lease` 포함. 되돌릴 수 없는 쪽이 항상 더 비싸다)
 - 머지 안 된 브랜치 삭제
 
