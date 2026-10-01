@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # block-main-push.sh 자체 검사. main 에서 실행해야 의미가 있다.
-H="$(cd "$(dirname "$0")" && pwd)/block-main-push.sh"
+H="$(cd "$(dirname "$0")/../hooks" && pwd)/block-main-push.sh"
 fail=0
 t() {
   printf '  %-46s ' "$2"
